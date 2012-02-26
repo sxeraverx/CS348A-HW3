@@ -1,0 +1,15 @@
+This is a template code for homework 3 and should compile and run
+as-is without modification. You may need to edit the Makefile to get
+it to compile on your system.  It has been tested on the Stanford Myth
+machines.
+
+The code uses OpenGL and the FLTK user interface library (version 1.3.0
+recommended). See the documentation at http://www.fltk.org/.
+
+To edit the interface, use the FLUID editor (binary name: fluid). To
+add additional sliders, it is easiest to copy and paste the existing
+sliders and edit them by double clicking them. You will probably want
+to change the Label under the GUI tab, and the Name and Callback under
+the C++ tab.
+
+[Credit goes to Victor Liu for revising the assignment to use FLTK!]

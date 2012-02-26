@@ -1,0 +1,86 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0300 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <FL/Fl_Gl_Window.h>} {public global
+} 
+
+class MainCanvas {open : {public Fl_Gl_Window}
+} {
+  Function {MainCanvas(int X, int Y, int W, int H)} {open
+  } {}
+  Function {handle(int event)} {open return_type int
+  } {}
+  Function {draw()} {open return_type void
+  } {}
+} 
+
+class CameraPositionCanvas {open : {public Fl_Gl_Window}
+} {
+  Function {CameraPositionCanvas(int X, int Y, int W, int H)} {open
+  } {}
+  Function {handle(int event)} {open return_type int
+  } {}
+  Function {draw()} {open return_type void
+  } {}
+} 
+
+Function {create_the_forms()} {open
+} {
+  Fl_Window assgn1_ui {
+    label assgn1_ui open
+    xywh {277 75 870 800} type Double box NO_BOX visible
+  } {
+    Fl_Box {} {user_data_type long
+      xywh {0 0 870 800} box UP_BOX labelcolor 56
+    }
+    Fl_Button ExitButton {
+      label Exit
+      user_data 0 user_data_type long
+      callback QuitProgram
+      xywh {770 770 80 20} box SHADOW_BOX labelfont 1
+    }
+    Fl_Button All {user_data_type long
+      xywh {0 0 0 0} box NO_BOX color 1027423549 selection_color 1027423549 labelcolor 56
+    }
+    Fl_Box {} {
+      label {Viewpoint Position} user_data_type long
+      xywh {470 570 290 20} labelfont 1 align 16
+    }
+    Fl_Value_Slider ViewPointXSlider {
+      label X
+      user_data 0 user_data_type long
+      callback ViewPointXCallback
+      xywh {420 600 400 20} type Horizontal color 223 labelcolor 56 align 4
+    }
+    Fl_Value_Slider ViewPointYSlider {
+      label Y
+      user_data 0 user_data_type long
+      callback ViewPointYCallback
+      xywh {420 630 400 20} type Horizontal color 63 labelcolor 56 align 4
+    }
+    Fl_Value_Slider ViewPointZSlider {
+      label Z
+      user_data 0 user_data_type long
+      callback ViewPointZCallback selected
+      xywh {420 660 400 20} type Horizontal color 88 labelcolor 56 align 4
+    }
+    Fl_Button {} {user_data_type long
+      xywh {0 0 0 0} box NO_BOX color 1651472442 selection_color 1651472442 labelcolor 56
+    }
+    Fl_Box canvas {
+      user_data 0 user_data_type long
+      xywh {20 40 800 510} box DOWN_BOX labelcolor 56
+      class MainCanvas
+    }
+    Fl_Box {} {
+      label {Sphere View} user_data_type long
+      xywh {280 10 290 20} labelfont 1 align 16
+    }
+    Fl_Box canvas2 {
+      user_data 0 user_data_type long
+      xywh {20 570 360 220} box DOWN_BOX labelcolor 56
+      class CameraPositionCanvas
+    }
+  }
+} 
