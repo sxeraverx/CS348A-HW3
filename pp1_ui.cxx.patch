@@ -1,0 +1,27 @@
+--- pp1_ui.cxx	2012-02-27 11:07:11.000000000 -0800
++++ pp1_ui.cxx.d	2012-02-27 11:07:00.000000000 -0800
+@@ -2,24 +2,6 @@
+ 
+ #include "pp1_ui.h"
+ 
+-MainCanvas::MainCanvas(int X, int Y, int W, int H) {
+-}
+-
+-int MainCanvas::handle(int event) {
+-}
+-
+-void MainCanvas::draw() {
+-}
+-
+-CameraPositionCanvas::CameraPositionCanvas(int X, int Y, int W, int H) {
+-}
+-
+-int CameraPositionCanvas::handle(int event) {
+-}
+-
+-void CameraPositionCanvas::draw() {
+-}
+-
+ Fl_Double_Window *assgn1_ui=(Fl_Double_Window *)0;
+ 
+ Fl_Button *ExitButton=(Fl_Button *)0;

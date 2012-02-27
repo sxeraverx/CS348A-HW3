@@ -13,9 +13,9 @@ FL_LIBS = -lfltk_gl -lfltk
 # Additional libraries needed to link with OpenGL and any platform specific stuff
 GLLIBS = -lGL -lGLU -lX11 -lm
 
-CFLAGS= -O2 $(FL_INCLUDE)
+CFLAGS= -O3 $(FL_INCLUDE) -ggdb 
 
-LFLAGS = -O2
+LFLAGS = -O3 -g
 
 ###############################################################################
 # basic headers and files *.o to be linked together
@@ -50,9 +50,16 @@ pp1_ui.o: pp1_ui.h pp1_ui.cxx
 		@echo Compiling pp1_ui
 		$(CC) $(CFLAGS) -c pp1_ui.cxx
 
+pp1_ui.cxx: pp1_ui.fd
+		fluid -c pp1_ui.fd
+		patch < pp1_ui.cxx.patch
+
+pp1_ui.h: pp1_ui.cxx
+
 ###############################################################################
 # initial procedure
 ###############################################################################
 clean:
 		@rm -fr *.o *% .*% \
+		pp1_ui.cxx pp1_ui.h \
 		pp1
