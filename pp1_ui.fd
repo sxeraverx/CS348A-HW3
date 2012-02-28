@@ -110,7 +110,7 @@ Function {create_the_forms()} {open
       class MainCanvas
     }
     Fl_Box {} {
-      label {Sphere View} user_data_type long selected
+      label {Torus View} user_data_type long selected
       xywh {280 10 290 20} labelfont 1 align 16
     }
     Fl_Box canvas2 {

@@ -1,5 +1,5 @@
 /*********************************************************************************/
-/* Programming Project 1: Sample program to visualize a sphere in OpenGL         */
+/* Programming Project 1: Sample program to visualize a torus in OpenGL         */
 /*********************************************************************************/
 
 #include <GL/gl.h>
@@ -84,6 +84,17 @@ void recalcPolarSliders()
   double theta = acos(viewY/r);
   double phi = atan(viewZ/viewX);
 
+  if(phi<0 && viewZ>0)
+      phi += M_PI;
+  if(phi>0 && viewZ<0)
+      phi -= M_PI;
+/*
+  if(phi<-M_PI/2 || phi>M_PI/2)
+  {
+      viewX = -viewX;
+      viewZ = -viewZ;
+      }*/
+
   ViewPointRSlider->value(r);
   ViewPointThetaSlider->value(theta*180/M_PI);
   ViewPointPhiSlider->value(phi*180/M_PI);
@@ -122,14 +133,13 @@ void DrawQuadrant() {
 }
 
 void DrawScene(){
-  // Replace with your code to draw the torus
-  //gluSphere(theQuadric, 3.0, 50, 50);
-
   theNurb = gluNewNurbsRenderer();
   gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 25.0);
+  gluNurbsProperty(theNurb, GLU_SAMPLING_METHOD, GLU_DOMAIN_DISTANCE);
+  gluNurbsProperty(theNurb, GLU_U_STEP, 15);
+  gluNurbsProperty(theNurb, GLU_V_STEP, 15);
   gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
   gluNurbsCallback(theNurb, GLU_ERROR, (GLvoid (*)()) nurbsError);
-  int i, j;
 
   DrawQuadrant();
   
@@ -180,6 +190,7 @@ void ViewPointRCallback(Fl_Value_Slider *ob, long data){
   double phi = atan(viewZ/viewX);
 
   r = ob->value();
+
   viewX = r * cos(phi) * sin(theta);
   viewZ = r * sin(phi) * sin(theta);
   viewY = r * cos(theta);
@@ -217,6 +228,13 @@ void ViewPointPhiCallback(Fl_Value_Slider *ob, long data){
   viewX = r * cos(phi) * sin(theta);
   viewZ = r * sin(phi) * sin(theta);
   viewY = r * cos(theta);
+/*
+  if(phi<-M_PI/2 || phi>M_PI/2)
+  {
+      viewX = -viewX;
+      viewZ = -viewZ;
+      }*/
+
   canvas->redraw();
   canvas2->redraw();
   recalcCartesianSliders();
@@ -295,7 +313,7 @@ void MyInit(void){
 int main(int argc, char *argv[]){
 	Fl_Double_Window *ui = create_the_forms();
 	Fl::visual(FL_DOUBLE|FL_INDEX);
-	ui->label("Sphere");
+	ui->label("Torus");
 	ui->show(argc, argv);
 
 	InitInterfaceDefaults();
@@ -350,7 +368,7 @@ void DrawAxes(void){
 	glEnable(GL_LIGHTING);
 }
 
-// Create the viewpoint lines and spheres
+// Create the viewpoint lines and torus
 void DrawViewpoint(void){
 	glDisable(GL_LIGHTING);
 	glLineWidth(3.0);
