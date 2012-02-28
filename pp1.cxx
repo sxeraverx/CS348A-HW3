@@ -26,10 +26,10 @@
 #define VIEW_R_DEFAULT_MAX      13.856 
 
 #define VIEW_THETA_DEFAULT_MIN  0.01       /* min and max values of theta position */
-#define VIEW_THETA_DEFAULT_MAX  M_PI
+#define VIEW_THETA_DEFAULT_MAX  180.0
 
-#define VIEW_PHI_DEFAULT_MIN    -M_PI     /* min and max values of phi position */
-#define VIEW_PHI_DEFAULT_MAX    M_PI
+#define VIEW_PHI_DEFAULT_MIN    -180.0     /* min and max values of phi position */
+#define VIEW_PHI_DEFAULT_MAX    180.0
 
 #define TORUS_r_DEFAULT          0.5      /* default r radius of the torus */
 #define TORUS_r_DEFAULT_MIN      0.0      /* min and max values of r radius */
@@ -61,13 +61,6 @@ GLfloat ctrlpoints[3][3][4] = {
 void DefineLight();
 void DefineMaterial();
 void DefineViewPointMain();
-void DefineAltMaterial(void){
-	glClearColor(0.0, 0.0, 0.5, 0.5);
-
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-	glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-}
 
 
 void recalcCtrlPoints()
@@ -90,16 +83,22 @@ void recalcPolarSliders()
   double r = sqrt(pow(viewX, 2) + pow(viewY, 2) + pow(viewZ, 2));
   double theta = acos(viewY/r);
   double phi = atan(viewZ/viewX);
-       
+
   ViewPointRSlider->value(r);
-  ViewPointThetaSlider->value(theta);
-  ViewPointPhiSlider->value(phi);
+  ViewPointThetaSlider->value(theta*180/M_PI);
+  ViewPointPhiSlider->value(phi*180/M_PI);
+
+  DefineViewPointMain();
+  DefineLight();
 }
 void recalcCartesianSliders()
 {
   ViewPointXSlider->value(viewX);
   ViewPointYSlider->value(viewY);
   ViewPointZSlider->value(viewZ);
+
+  DefineViewPointMain();
+  DefineLight();
 }
 
 void nurbsError(GLenum errorCode)
@@ -112,83 +111,26 @@ void nurbsError(GLenum errorCode)
 }
 
 void DrawQuadrant() {
-  /*
-  for (int j = 0; j <= 30; j++)
-    {
-      int i;
-      glBegin(GL_LINE_STRIP);
-      for (i = 0; i <= 30; i++)
-	glEvalCoord2f((GLfloat)i/30.0, (GLfloat)j/30.0);
-      glEnd();
-      
-      glBegin(GL_LINE_STRIP);
-      for (i = 0; i <= 30; i++)
-	glEvalCoord2f((GLfloat)j/30.0, (GLfloat)i/30.0);
-      glEnd(); 
-    }
-  */
-
-  
-  /*
-  glMap2f(GL_MAP2_VERTEX_4, 0.0, 1.0, 4, 3, 0, 1, 12, 3, &ctrlpoints[0][0][0]);
-  glEnable(GL_AUTO_NORMAL);
-  glEnable(GL_MAP2_VERTEX_4);
-  glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
-
-  
-  
-  for(int i=0; i < 30; i++) {
-    int j;
-    glBegin(GL_QUAD_STRIP);
-    for(j = 0; j <= 30; j++)
-      {
-	if(flippedNormals) {
-	  glEvalCoord2f((i+1)/30.0, j / 30.0);
-	  glEvalCoord2f(i / 30.0, j / 30.0);
-	}
-	else {
-	  glEvalCoord2f(i / 30.0, j / 30.0);
-	  glEvalCoord2f((i+1)/30.0, j / 30.0);
-	}
-      }
-    glEnd();
-  }
-  glDisable(GL_MAP2_VERTEX_4);
-  */
-
-  //void fixBegin();
-  //void fixVertex3fv(GLfloat *vertex);
-  
-  theNurb = gluNewNurbsRenderer();
-  gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 25.0);
-  gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
-  gluNurbsCallback(theNurb, GLU_ERROR, (GLvoid (*)()) nurbsError);
   GLfloat knots[6] = {0, 0, 0, 1, 1, 1};
-  int i, j;
 
   gluBeginSurface(theNurb);
   gluNurbsSurface(theNurb,
 		  6, knots, 6, knots,
 		  3 * 4, 4, &ctrlpoints[0][0][0],
 		  3, 3, GL_MAP2_VERTEX_4);
-    
   gluEndSurface(theNurb);
-  gluDeleteNurbsRenderer(theNurb);
-  
+}
+
+void DrawScene(){
+  // Replace with your code to draw the torus
+  //gluSphere(theQuadric, 3.0, 50, 50);
+
   theNurb = gluNewNurbsRenderer();
   gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 25.0);
   gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
   gluNurbsCallback(theNurb, GLU_ERROR, (GLvoid (*)()) nurbsError);
-  gluBeginSurface(theNurb);
-  gluEndSurface(theNurb);
-  gluDeleteNurbsRenderer(theNurb);
-}
+  int i, j;
 
-void DrawScene(){
-  DefineViewPointMain();
-  DefineLight();
-  // Replace with your code to draw the torus
-  //gluSphere(theQuadric, 3.0, 50, 50);
   DrawQuadrant();
   
   glPushMatrix();
@@ -203,14 +145,8 @@ void DrawScene(){
   
   glPopMatrix();
   glFlush();
-
-  glPointSize(5);
-  glDisable(GL_LIGHTING);
-  glBegin(GL_POINTS);
-  glVertex3fv(light0_position);
-  glVertex3fv(light1_position);
-  glEnd();
-  glEnable(GL_LIGHTING);
+    
+  gluDeleteNurbsRenderer(theNurb);
 }
 
 // Callback for the slider that defines viewpoint x
@@ -242,6 +178,7 @@ void ViewPointRCallback(Fl_Value_Slider *ob, long data){
   double r = sqrt(pow(viewX, 2) + pow(viewZ, 2) + pow(viewY, 2));
   double theta = acos(viewY/r);
   double phi = atan(viewZ/viewX);
+
   r = ob->value();
   viewX = r * cos(phi) * sin(theta);
   viewZ = r * sin(phi) * sin(theta);
@@ -254,11 +191,19 @@ void ViewPointRCallback(Fl_Value_Slider *ob, long data){
 // Callback for the slider that defines viewpoint Theta
 void ViewPointThetaCallback(Fl_Value_Slider *ob, long data){
   double r = sqrt(pow(viewX, 2) + pow(viewZ, 2) + pow(viewY, 2));
-  double theta = ob->value();
+  double theta = ob->value()*M_PI/180;
   double phi = atan(viewZ / viewX);
+
   viewX = r * cos(phi) * sin(theta);
   viewZ = r * sin(phi) * sin(theta);
   viewY = r * cos(theta);
+
+  if(phi<-M_PI/2 || phi>M_PI/2)
+  {
+      viewX = -viewX;
+      viewZ = -viewZ;
+  }
+
   canvas->redraw();
   canvas2->redraw();
   recalcCartesianSliders();
@@ -268,7 +213,7 @@ void ViewPointThetaCallback(Fl_Value_Slider *ob, long data){
 void ViewPointPhiCallback(Fl_Value_Slider *ob, long data){
   double r = sqrt(pow(viewX, 2) + pow(viewZ, 2) + pow(viewY, 2));
   double theta = acos(viewY/r);
-  double phi = ob->value();
+  double phi = ob->value()*M_PI/180;
   viewX = r * cos(phi) * sin(theta);
   viewZ = r * sin(phi) * sin(theta);
   viewY = r * cos(theta);
@@ -457,6 +402,7 @@ int MainCanvas::handle(int event){
 
 void MainCanvas::draw(){
 	/* Draw in the main window */
+    DefineViewPointMain();
 	if (!valid()) {
 	  glViewport(0,0, (GLint)w(), (GLint)h());
 	  glMatrixMode( GL_PROJECTION );
@@ -481,6 +427,7 @@ int CameraPositionCanvas::handle(int event){
 	return Fl_Gl_Window::handle(event);
 }
 void CameraPositionCanvas::draw(){
+    DefineViewPointSecondary();
 	if (!valid()) {
 		glViewport(0,0, (GLint)w(), (GLint)h());
 		glMatrixMode( GL_PROJECTION );
