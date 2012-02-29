@@ -1,15 +1,9 @@
-This is a template code for homework 3 and should compile and run
-as-is without modification. You may need to edit the Makefile to get
-it to compile on your system.  It has been tested on the Stanford Myth
-machines.
+Leilani Gilpin and Thomas Minor
 
-The code uses OpenGL and the FLTK user interface library (version 1.3.0
-recommended). See the documentation at http://www.fltk.org/.
+The program is structured very similarly to the sample code provided. There is a global array storing the control points for a single quadrant of the torus. There is a function, recalcCtrlPoints, that is called whenever the m, r, or R parameter changes, to recalculate the control points. There are two functions, recalcPolarSliders and reclacCartesianSliders to recalculate the spherical coordinate and cartesian coordinate sliders, respectively, whenever the other changes.
 
-To edit the interface, use the FLUID editor (binary name: fluid). To
-add additional sliders, it is easiest to copy and paste the existing
-sliders and edit them by double clicking them. You will probably want
-to change the Label under the GUI tab, and the Name and Callback under
-the C++ tab.
+Finally, there is DrawQuadrant, which draws a single quadrant of the NURBS torus. DrawScene setups up the NURBS renderer and calls DrawQuadrant repeatedly with different rotations to form the full torus.
 
-[Credit goes to Victor Liu for revising the assignment to use FLTK!]
+Trivial callbacks were added for the viewpoint spherical coordinate sliders, as well as the torus parameter sliders.
+
+There is nothing special or especially clever about the code. I have included pp1_ui.cxx.patch, as well as Makefile modifications to make use of it, to get the FLuid output to compile correctly with the project.
